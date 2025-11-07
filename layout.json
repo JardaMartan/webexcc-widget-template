@@ -1,0 +1,38 @@
+{
+  "desktopLayout": {
+    "appTitle": "{{WIDGET_TITLE}}",
+    "logo": "{{WIDGET_LOGO_URL}}",
+    "areas": {
+      "header": {
+        "widgets": []
+      },
+      "content": {
+        "widgets": [
+          {
+            "src": "http://127.0.0.1:4137/dist/{{WIDGET_NAME}}.js",
+            "title": "{{WIDGET_TITLE}}",
+            "tag": "{{WIDGET_KEBAB_CASE}}",
+            "area": "content",
+            "nav": {
+              "navigateTo": "overview"
+            },
+            "layout": {
+              "desktop": {
+                "x": 0,
+                "y": 0,
+                "w": 6,
+                "h": 4
+              }
+            },
+            "context": {
+              "task": "$STORE.task",
+              "agent": "$STORE.agent",
+              "accesstoken": "$STORE.auth.accessToken",
+              "orgid": "$STORE.auth.orgId"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

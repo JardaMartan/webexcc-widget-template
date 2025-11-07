@@ -1,0 +1,292 @@
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { 
+  Select,
+  SelectOption,
+  Loading,
+  Label,
+  Button
+} from '@momentum-ui/react';
+import '../public/css/momentum-ui-local-corrected.min.css';
+import { 
+  initializeDesktopSDK,
+  setAgent,
+  // TODO: Add your custom actions here
+  // Example: setCustomData, executeCustomAction
+} from './store';
+import { sendWebhook } from './api';
+import { useI18n } from './i18n';
+
+const {{WIDGET_PASCAL_CASE}} = ({ 
+  darkmode, 
+  accesstoken, 
+  task, 
+  selectedtaskid, 
+  cad, 
+  details, 
+  wrap, 
+  avatar, 
+  name, 
+  orgid, 
+  datacenter, 
+  agent
+}) => {
+  const dispatch = useDispatch();
+  const { 
+    isLoading, 
+    agent: storeAgent,
+    // TODO: Add your custom state properties here
+    // Example: customData, selectedOption
+  } = useSelector(state => state.widget);
+
+  const [notes, setNotes] = useState('');
+  const { t } = useI18n();
+
+  // TODO: Add your custom options/data here
+  // Example:
+  // const customOptions = useMemo(() => [
+  //   { value: 'option1', label: t('ui.option1') },
+  //   { value: 'option2', label: t('ui.option2') }
+  // ], [t]);
+
+  useEffect(() => {
+    dispatch(initializeDesktopSDK());
+  }, [dispatch]);
+
+  useEffect(() => {
+    console.log('{{WIDGET_PASCAL_CASE}}: Props received:', { 
+      darkmode, 
+      accesstoken, 
+      task, 
+      selectedtaskid, 
+      cad, 
+      details, 
+      wrap, 
+      avatar, 
+      name, 
+      orgid, 
+      datacenter, 
+      agent
+    });
+  }, [darkmode, accesstoken, task, selectedtaskid, cad, details, wrap, avatar, name, orgid, datacenter, agent]);
+
+  // Sync Redux store agent with incoming agent prop
+  useEffect(() => {
+    if (agent) {
+      const propId = agent.agentDbId || agent.id;
+      const storeId = storeAgent && (storeAgent.agentDbId || storeAgent.id);
+      if (!storeAgent || propId !== storeId) {
+        console.log('Syncing agent prop to Redux store', { propId, storeId });
+        dispatch(setAgent(agent));
+      }
+    }
+  }, [agent, storeAgent, dispatch]);
+
+  // TODO: Add your custom useEffect hooks here
+  // Example:
+  // useEffect(() => {
+  //   if (someCondition) {
+  //     dispatch(fetchCustomData());
+  //   }
+  // }, [someCondition, dispatch]);
+
+  // Parsing helpers
+  const parseJsonSafely = useCallback((maybeJson) => {
+    if (typeof maybeJson !== 'string') return maybeJson;
+    try { return JSON.parse(maybeJson); } catch (err) { console.error('JSON parse failed', err); return {}; }
+  }, []);
+
+  const sendBasicWebhook = useCallback(async (actionType) => {
+    const taskObj = parseJsonSafely(task) || {};
+    const agentObj = parseJsonSafely(agent) || {};
+    const payload = {
+      conversation_id: taskObj?.mediaResourceId || '',
+      doc_url: taskObj?.callAssociatedData?.associatedUrl?.value || taskObj?.callAssociatedData?.associatedURL?.value || '',
+      customer_id: taskObj?.ani || '',
+      agent_id: agentObj?.agentEmailId || '',
+      data: { action: actionType, notes }
+    };
+    try {
+      await sendWebhook(payload);
+      console.log('Webhook sent successfully for action:', actionType);
+    } catch (error) {
+      console.error('Failed to send webhook:', error);
+    }
+  }, [agent, notes, parseJsonSafely, task]);
+
+  // TODO: Add your custom handlers here
+  // Example:
+  // const handleCustomAction = useCallback(() => {
+  //   dispatch(executeCustomAction(customData));
+  // }, [dispatch, customData]);
+
+  const handleSubmit = useCallback(() => {
+    console.log('Submit button clicked', { selectedtaskid, notes });
+    // TODO: Implement your custom submit logic here
+    // Example:
+    // switch (selectedAction) {
+    //   case 'CustomAction':
+    //     handleCustomAction();
+    //     break;
+    //   default:
+    //     void sendBasicWebhook('CustomAction');
+    // }
+    void sendBasicWebhook('Submit');
+  }, [selectedtaskid, notes, sendBasicWebhook]);
+
+  // TODO: Add your custom validation logic here
+  // const isSubmitDisabled = false;
+
+  /**
+   * Truncate text for display purposes
+   * @param {*} text - Text to truncate (any type)
+   * @param {number} maxLength - Maximum length before truncation (default: 50)
+   * @returns {string} Truncated text with ellipsis or 'not set'
+   */
+  const truncateText = (text, maxLength = 50) => {
+    if (!text) return t('ui.value.notSet');
+    const textString = typeof text === 'object' ? JSON.stringify(text) : String(text);
+    return textString.length > maxLength ? textString.substring(0, maxLength) + '...' : textString;
+  };
+
+  const loadingView = (
+    <div style={{ padding: '20px' }}>
+      <Loading />
+      <p>{t('ui.loading')}</p>
+    </div>
+  );
+
+  /**
+   * Extract and validate associated URL from task data
+   * @param {object|string} taskData - Task object or JSON string
+   * @returns {string|null} Valid HTTP/HTTPS URL or null if invalid/missing
+   */
+  const extractAssociatedUrl = (taskData) => {
+    if (!taskData) return null;
+    let obj = taskData;
+    if (typeof taskData === 'string') {
+      try { obj = JSON.parse(taskData); } catch (e) { console.error('URL parse failed', e); return null; }
+    }
+    const url = obj?.callAssociatedData?.associatedUrl?.value || obj?.callAssociatedData?.associatedURL?.value;
+    if (typeof url !== 'string') return null;
+    const trimmed = url.trim();
+    if (!/^https?:\/\//i.test(trimmed)) return null;
+    return trimmed;
+  };
+
+  const associatedUrl = extractAssociatedUrl(task);
+
+  if (isLoading) return loadingView;
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <div style={{ width: '100%' }}>
+        {/* TODO: Replace this section with your custom widget UI */}
+        <h2>{t('ui.widget.title')}</h2>
+        <p>{t('ui.widget.description')}</p>
+
+        {/* Example form field - customize as needed */}
+        <div style={{ marginTop: '20px' }}>
+          <Label htmlFor="notes-field">{t('ui.notes.label')}</Label>
+          <textarea
+            id="notes-field"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={3}
+            style={{ 
+              width: '100%', 
+              padding: '8px', 
+              fontSize: '14px', 
+              fontFamily: 'inherit',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              resize: 'vertical',
+              boxSizing: 'border-box'
+            }}
+            placeholder={t('ui.notes.placeholder')}
+          />
+        </div>
+
+        {/* Submit button */}
+        <div style={{ marginTop: '20px' }}>
+          <Button
+            color="blue"
+            onClick={handleSubmit}
+            // disabled={isSubmitDisabled}
+            ariaLabel="Submit action"
+          >
+            {t('ui.submit')}
+          </Button>
+        </div>
+
+        {/* Associated URL preview (optional) */}
+        {associatedUrl && (
+          <div style={{ marginTop: '20px' }}>
+            <Label>{t('ui.url.preview.label')}</Label>
+            <div style={{ border: '1px solid #ddd', marginTop: '8px', borderRadius: '4px', overflow: 'hidden', width: '100%' }}>
+              <div style={{ background: '#f5f5f5', padding: '4px 8px', fontSize: '11px', color: '#333', wordBreak: 'break-all' }}>
+                {associatedUrl}
+              </div>
+              <iframe
+                title="associated-url"
+                src={associatedUrl}
+                style={{ display: 'block', width: '100%', height: '300px', border: 0, background: '#fff' }}
+                sandbox="allow-same-origin allow-forms allow-scripts allow-popups"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Debug properties display */}
+        <div style={{ marginTop: '20px', fontSize: '12px', color: '#666' }}>
+          <div><strong>{t('ui.props.header')}</strong></div>
+          <div>{t('ui.props.darkmode')}: {darkmode || t('ui.value.notSet')}</div>
+          <div>{t('ui.props.accessToken')}: {accesstoken ? '***' + accesstoken.slice(-4) : t('ui.value.notSet')}</div>
+          <div>{t('ui.props.name')}: {name || t('ui.value.notSet')}</div>
+          <div>{t('ui.props.avatar')}: {avatar || t('ui.value.notSet')}</div>
+          <div>{t('ui.props.orgId')}: {orgid || t('ui.value.notSet')}</div>
+          <div>{t('ui.props.dataCenter')}: {datacenter || t('ui.value.notSet')}</div>
+          <div>{t('ui.props.selectedTaskId')}: {selectedtaskid || t('ui.value.notSet')}</div>
+          <div>{t('ui.props.task')}: {truncateText(task)}</div>
+          <div>{t('ui.props.agent')}: {truncateText(agent)}</div>
+          <div>{t('ui.props.cad')}: {truncateText(cad)}</div>
+          <div>{t('ui.props.details')}: {truncateText(details)}</div>
+          <div>{t('ui.props.wrap')}: {truncateText(wrap)}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+{{WIDGET_PASCAL_CASE}}.propTypes = {
+  darkmode: PropTypes.string,
+  accesstoken: PropTypes.string,
+  task: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  selectedtaskid: PropTypes.string,
+  cad: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  details: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  wrap: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  avatar: PropTypes.string,
+  name: PropTypes.string,
+  orgid: PropTypes.string,
+  datacenter: PropTypes.string,
+  agent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+};
+
+{{WIDGET_PASCAL_CASE}}.defaultProps = {
+  darkmode: null,
+  accesstoken: null,
+  task: null,
+  selectedtaskid: null,
+  cad: null,
+  details: null,
+  wrap: null,
+  avatar: null,
+  name: null,
+  orgid: null,
+  datacenter: null,
+  agent: null,
+};
+
+export default {{WIDGET_PASCAL_CASE}};
