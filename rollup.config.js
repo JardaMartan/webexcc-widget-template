@@ -67,13 +67,15 @@ export default {
       'process ||': 'false ||',
       'global.process': 'undefined',
       'window.process': 'undefined',
-      // Replace CommonJS require calls for externalized dependencies
-      'require("react")': 'React',
-      'require(\'react\')': 'React',
-      'require("react-dom")': 'ReactDOM',
-      'require(\'react-dom\')': 'ReactDOM',
-      'require("react-dom/client")': 'ReactDOM',
-      'require(\'react-dom/client\')': 'ReactDOM',
+      // Only replace React requires when NOT self-contained (when externalizing)
+      ...(isSelfContained ? {} : {
+        'require("react")': 'React',
+        'require(\'react\')': 'React',
+        'require("react-dom")': 'ReactDOM',
+        'require(\'react-dom\')': 'ReactDOM',
+        'require("react-dom/client")': 'ReactDOM',
+        'require(\'react-dom/client\')': 'ReactDOM',
+      }),
       // Replace Node.js util with a minimal polyfill
       'require("util")': '{ inspect: function(obj) { return JSON.stringify(obj); } }',
       'require(\'util\')': '{ inspect: function(obj) { return JSON.stringify(obj); } }',
