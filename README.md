@@ -2,7 +2,7 @@
 
 This template provides a complete foundation for creating custom widgets for Webex Contact Center Desktop. It's based on the proven architecture of the hello-widget and includes all necessary files, configurations, and patterns for rapid widget development.
 
-## ⚡ Quick Setup (7 Steps)
+## ⚡ Quick Setup (9 Steps)
 
 1. **Clone repository:** `git clone https://github.com/JardaMartan/webexcc-widget-template.git`
 2. **Run setup:** `./setup.sh` (Linux/macOS) or `setup.bat` (Windows)
@@ -10,7 +10,9 @@ This template provides a complete foundation for creating custom widgets for Web
 4. **Build widget:** `npm run build:standalone`
 5. **Start server:** `npm run serve`
 6. **Test locally:** Open `http://127.0.0.1:4137/standalone-test.html`
-7. **Deploy to WebexCC:** Upload to CDN, update layout JSON, test in Desktop
+7. **Configure in WebexCC:** Add widget to Desktop Layout JSON (localhost first)
+8. **Test in Desktop:** Verify widget loads and functions in WebexCC Desktop
+9. **Deploy to CDN:** Upload to CDN, update layout JSON, deploy to production
 
 Ready to build your widget in minutes! 🚀
 
@@ -61,11 +63,64 @@ npm run serve
 ### 6. Test Your Widget
 Open `http://127.0.0.1:4137/standalone-test.html` in your browser to test the widget.
 
-### 7. Deploy to Webex Contact Center Desktop
-1. Upload `dist/your-widget-name-standalone.js` to your CDN
-2. Update `layout.standalone.json` with your CDN URL
-3. Upload the layout JSON to Webex Contact Center Desktop
-4. Test in the Desktop environment
+### 7. Configure Widget in WebexCC Desktop Layout
+First, test with localhost before deploying to CDN:
+
+1. **Update layout.standalone.json** with your localhost URL:
+   ```json
+   {
+     "appTitle": "Your Widget Name",
+     "version": "0.0.1",
+     "buildNumber": "1.0.0.0",
+     "areas": {
+       "app-maximize-area": {
+         "widgets": {
+           "your-widget": {
+             "src": "http://127.0.0.1:4137/dist/your-widget-standalone.js",
+             "label": "Your Widget",
+             "iconSrc": "your-icon-url",
+             "order": 1,
+             "context": {
+               "task": "$STORE.task",
+               "agent": "$STORE.agent",
+               "accesstoken": "$STORE.auth.accessToken",
+               "orgid": "$STORE.auth.orgId"
+             }
+           }
+         }
+       }
+     }
+   }
+   ```
+
+2. **Upload layout to WebexCC Desktop:**
+   - Log into Webex Contact Center Management Portal
+   - Navigate to **Provisioning > Desktop Layout**
+   - Create new layout or edit existing one
+   - Upload your modified `layout.standalone.json`
+   - Assign layout to teams/agents
+
+📖 **References:**
+- [Create Custom Desktop Layout Guide](https://help.webex.com/en-us/article/ng08gqeb/Create-custom-desktop-layout)
+- [Desktop Developer Documentation](https://developer.webex.com/webex-contact-center/docs/desktop)
+
+### 8. Test in WebexCC Desktop
+1. Ensure your development server is running: `npm run serve`
+2. Open WebexCC Desktop with your custom layout
+3. Verify the widget loads and displays correctly
+4. Test widget functionality with real agent/task data
+5. Check browser console for any errors
+
+### 9. Deploy to Production CDN
+Once testing is complete, deploy to your CDN:
+
+1. **Upload to CDN:** Upload `dist/your-widget-name-standalone.js` to your CDN
+2. **Update layout JSON:** Replace localhost URL with CDN URL:
+   ```json
+   "src": "https://your-cdn.com/widgets/your-widget-standalone.js"
+   ```
+3. **Deploy layout:** Upload updated layout JSON to WebexCC Desktop
+4. **Production test:** Verify widget works from CDN in production environment
 
 ## 📋 Template Placeholders
 
@@ -337,29 +392,100 @@ Widget automatically receives these properties from Contact Center Desktop:
 - `accesstoken`: OAuth token for API calls
 - `orgid`: Organization ID
 
-## 📝 Layout Configuration
+## 📝 WebexCC Desktop Layout Configuration
 
-### Development Layout (`layout.json`)
-- Uses external React build
-- Points to `http://127.0.0.1:4137/dist/{{WIDGET_NAME}}.js`
-- For local development only
+### Layout Structure Overview
+WebexCC Desktop layouts define where and how widgets appear in the agent interface. The template includes several layout files for different deployment scenarios.
 
-### Production Layout (`layout.standalone.json`)
-- Uses standalone build
-- Points to your CDN URL
-- Self-contained, no external dependencies
+### Available Layout Files
+- **`layout.json`**: Development with external React (localhost testing)
+- **`layout.standalone.json`**: Production with bundled React (CDN deployment)
+- **`layout.debug.json`**: Minimal debug widget for troubleshooting
+- **`layout.minimal.json`**: Simplified widget configuration
 
-### Context Binding
+### Desktop Layout Areas
+Widgets can be placed in different areas of the desktop interface:
+
 ```json
 {
-  "context": {
-    "task": "$STORE.task",
-    "agent": "$STORE.agent", 
-    "accesstoken": "$STORE.auth.accessToken",
-    "orgid": "$STORE.auth.orgId"
+  "areas": {
+    "app-maximize-area": {          // Main widget area (full screen)
+      "widgets": { /* your widgets */ }
+    },
+    "horizontal-panel": {           // Bottom panel area
+      "widgets": { /* your widgets */ }
+    },
+    "side-panel": {                 // Right side panel
+      "widgets": { /* your widgets */ }
+    }
   }
 }
 ```
+
+### Widget Configuration Structure
+```json
+{
+  "your-widget-name": {
+    "src": "http://127.0.0.1:4137/dist/your-widget-standalone.js",
+    "label": "Your Widget Display Name",
+    "iconSrc": "https://your-cdn.com/icon.png",
+    "order": 1,
+    "context": {
+      "task": "$STORE.task",
+      "agent": "$STORE.agent",
+      "accesstoken": "$STORE.auth.accessToken",
+      "orgid": "$STORE.auth.orgId",
+      "selectedtaskid": "$STORE.app.selectedTaskId",
+      "cad": "$STORE.task.callAssociatedData",
+      "details": "$STORE.task.details"
+    }
+  }
+}
+```
+
+### Context Data Binding
+The `context` object defines which WebexCC Desktop store data gets passed to your widget:
+
+| Property | Description | Desktop Store Path |
+|----------|-------------|-------------------|
+| `task` | Current interaction/task data | `$STORE.task` |
+| `agent` | Agent information and profile | `$STORE.agent` |
+| `accesstoken` | OAuth access token | `$STORE.auth.accessToken` |
+| `orgid` | Organization ID | `$STORE.auth.orgId` |
+| `selectedtaskid` | Currently selected task ID | `$STORE.app.selectedTaskId` |
+| `cad` | Call Associated Data | `$STORE.task.callAssociatedData` |
+| `details` | Task details and metadata | `$STORE.task.details` |
+
+### Development vs Production URLs
+**Development (localhost):**
+```json
+"src": "http://127.0.0.1:4137/dist/your-widget-standalone.js"
+```
+
+**Production (CDN):**
+```json
+"src": "https://your-cdn.com/widgets/your-widget-standalone.js"
+```
+
+### Layout Deployment Process
+1. **Management Portal**: Log into WebexCC Management Portal
+2. **Navigation**: Go to **Provisioning > Desktop Layout**
+3. **Create/Edit**: Create new layout or edit existing one
+4. **Upload**: Upload your JSON layout file
+5. **Assign**: Assign layout to teams, sites, or individual agents
+6. **Activate**: Save and activate the layout
+
+### Testing Strategy
+1. **Localhost First**: Test with `http://127.0.0.1:4137` URL
+2. **Verify Loading**: Ensure widget appears in Desktop interface
+3. **Check Context**: Verify widget receives proper context data
+4. **Test Functionality**: Test all widget features with real data
+5. **CDN Deployment**: Move to CDN only after localhost testing succeeds
+
+📖 **Official Documentation:**
+- [Desktop Layout Guide](https://help.webex.com/en-us/article/ng08gqeb/Create-custom-desktop-layout)
+- [Desktop Developer Docs](https://developer.webex.com/webex-contact-center/docs/desktop)
+- [Widget Development Guide](https://developer.webex.com/webex-contact-center/docs/desktop-widgets)
 
 ## 🚀 Deployment Checklist
 
@@ -368,7 +494,17 @@ Widget automatically receives these properties from Contact Center Desktop:
 - [ ] Run setup script: `./setup.sh` (Linux/macOS) or `setup.bat` (Windows)
 - [ ] Install dependencies: `npm install`
 - [ ] Build standalone version: `npm run build:standalone`
-- [ ] Test locally: `npm run serve` and open `standalone-test.html`
+- [ ] Start server: `npm run serve`
+- [ ] Test locally: Open `http://127.0.0.1:4137/standalone-test.html`
+
+### WebexCC Desktop Integration
+- [ ] Update `layout.standalone.json` with localhost URL (`http://127.0.0.1:4137/dist/your-widget-standalone.js`)
+- [ ] Configure widget context properties (task, agent, accesstoken, orgid)
+- [ ] Upload layout JSON to WebexCC Management Portal
+- [ ] Assign layout to test team/agents
+- [ ] Test widget in WebexCC Desktop environment
+- [ ] Verify widget receives proper context data
+- [ ] Test widget functionality with real agent sessions
 
 ### Production Deployment
 - [ ] Customize widget functionality in `src/YourWidget.jsx`
@@ -377,8 +513,9 @@ Widget automatically receives these properties from Contact Center Desktop:
 - [ ] Build final version: `npm run build:standalone`
 - [ ] Upload `dist/your-widget-name-standalone.js` to CDN
 - [ ] Update `layout.standalone.json` with CDN URL
-- [ ] Upload layout JSON to Webex Contact Center Desktop
-- [ ] Test in Desktop environment
+- [ ] Deploy updated layout JSON to WebexCC Desktop
+- [ ] Test production deployment
+- [ ] Monitor for errors and performance
 
 ## 🐛 Troubleshooting
 
