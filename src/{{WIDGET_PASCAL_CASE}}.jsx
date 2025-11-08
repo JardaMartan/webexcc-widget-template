@@ -152,26 +152,6 @@ const {{WIDGET_PASCAL_CASE}} = ({
     </div>
   );
 
-  /**
-   * Extract and validate associated URL from task data
-   * @param {object|string} taskData - Task object or JSON string
-   * @returns {string|null} Valid HTTP/HTTPS URL or null if invalid/missing
-   */
-  const extractAssociatedUrl = (taskData) => {
-    if (!taskData) return null;
-    let obj = taskData;
-    if (typeof taskData === 'string') {
-      try { obj = JSON.parse(taskData); } catch (e) { console.error('URL parse failed', e); return null; }
-    }
-    const url = obj?.callAssociatedData?.associatedUrl?.value || obj?.callAssociatedData?.associatedURL?.value;
-    if (typeof url !== 'string') return null;
-    const trimmed = url.trim();
-    if (!/^https?:\/\//i.test(trimmed)) return null;
-    return trimmed;
-  };
-
-  const associatedUrl = extractAssociatedUrl(task);
-
   if (isLoading) return loadingView;
 
   return (
@@ -229,24 +209,6 @@ const {{WIDGET_PASCAL_CASE}} = ({
             {t('ui.reject')}
           </Button>
         </div>
-
-        {/* Associated URL preview (optional) */}
-        {associatedUrl && (
-          <div style={{ marginTop: '20px' }}>
-            <Label>{t('ui.url.preview.label')}</Label>
-            <div style={{ border: '1px solid #ddd', marginTop: '8px', borderRadius: '4px', overflow: 'hidden', width: '100%' }}>
-              <div style={{ background: '#f5f5f5', padding: '4px 8px', fontSize: '11px', color: '#333', wordBreak: 'break-all' }}>
-                {associatedUrl}
-              </div>
-              <iframe
-                title="associated-url"
-                src={associatedUrl}
-                style={{ display: 'block', width: '100%', height: '300px', border: 0, background: '#fff' }}
-                sandbox="allow-same-origin allow-forms allow-scripts allow-popups"
-              />
-            </div>
-          </div>
-        )}
 
         {/* Debug properties display */}
         <div style={{ marginTop: '20px', fontSize: '12px', color: '#666' }}>

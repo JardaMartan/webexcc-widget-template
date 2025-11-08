@@ -14,12 +14,6 @@ export const translations = {
       },
       accept: 'Accept',
       reject: 'Reject',
-      url: {
-        preview: {
-          label: 'Associated URL Preview',
-          none: 'No associated URL available'
-        }
-      },
       props: {
         header: 'Properties from Webex CC Desktop:',
         darkmode: 'Dark Mode',
@@ -80,12 +74,6 @@ export const translations = {
       },
       accept: 'Aceptar',
       reject: 'Rechazar',
-      url: {
-        preview: {
-          label: 'Vista previa de URL asociada',
-          none: 'No hay URL asociada disponible'
-        }
-      },
       props: {
         header: 'Propiedades de Webex CC Desktop:',
         darkmode: 'Modo oscuro',
