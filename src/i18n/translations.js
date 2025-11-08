@@ -12,7 +12,8 @@ export const translations = {
         label: 'Notes',
         placeholder: 'Enter notes here...'
       },
-      submit: 'Submit',
+      accept: 'Accept',
+      reject: 'Reject',
       url: {
         preview: {
           label: 'Associated URL Preview',
@@ -77,7 +78,8 @@ export const translations = {
         label: 'Notas',
         placeholder: 'Ingrese notas aquí...'
       },
-      submit: 'Enviar',
+      accept: 'Aceptar',
+      reject: 'Rechazar',
       url: {
         preview: {
           label: 'Vista previa de URL asociada',

@@ -115,28 +115,23 @@ const {{WIDGET_PASCAL_CASE}} = ({
     }
   }, [agent, notes, parseJsonSafely, task]);
 
+  // Handle Accept action
+  const handleAccept = useCallback(() => {
+    console.log('Accept button clicked', { selectedtaskid, notes });
+    void sendBasicWebhook('Accept');
+  }, [selectedtaskid, notes, sendBasicWebhook]);
+
+  // Handle Reject action
+  const handleReject = useCallback(() => {
+    console.log('Reject button clicked', { selectedtaskid, notes });
+    void sendBasicWebhook('Reject');
+  }, [selectedtaskid, notes, sendBasicWebhook]);
+
   // TODO: Add your custom handlers here
   // Example:
   // const handleCustomAction = useCallback(() => {
   //   dispatch(executeCustomAction(customData));
   // }, [dispatch, customData]);
-
-  const handleSubmit = useCallback(() => {
-    console.log('Submit button clicked', { selectedtaskid, notes });
-    // TODO: Implement your custom submit logic here
-    // Example:
-    // switch (selectedAction) {
-    //   case 'CustomAction':
-    //     handleCustomAction();
-    //     break;
-    //   default:
-    //     void sendBasicWebhook('CustomAction');
-    // }
-    void sendBasicWebhook('Submit');
-  }, [selectedtaskid, notes, sendBasicWebhook]);
-
-  // TODO: Add your custom validation logic here
-  // const isSubmitDisabled = false;
 
   /**
    * Truncate text for display purposes
@@ -182,41 +177,56 @@ const {{WIDGET_PASCAL_CASE}} = ({
   return (
     <div style={{ padding: '20px' }}>
       <div style={{ width: '100%' }}>
-        {/* TODO: Replace this section with your custom widget UI */}
         <h2>{t('ui.widget.title')}</h2>
         <p>{t('ui.widget.description')}</p>
 
-        {/* Example form field - customize as needed */}
+        {/* Notes input field */}
         <div style={{ marginTop: '20px' }}>
           <Label htmlFor="notes-field">{t('ui.notes.label')}</Label>
           <textarea
             id="notes-field"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            rows={3}
+            rows={4}
             style={{ 
               width: '100%', 
-              padding: '8px', 
+              padding: '12px', 
               fontSize: '14px', 
               fontFamily: 'inherit',
               border: '1px solid #ccc',
-              borderRadius: '4px',
+              borderRadius: '6px',
               resize: 'vertical',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              minHeight: '100px'
             }}
             placeholder={t('ui.notes.placeholder')}
           />
         </div>
 
-        {/* Submit button */}
-        <div style={{ marginTop: '20px' }}>
+        {/* Accept and Reject buttons */}
+        <div style={{ 
+          marginTop: '24px', 
+          display: 'flex', 
+          gap: '16px',
+          justifyContent: 'center'
+        }}>
           <Button
-            color="blue"
-            onClick={handleSubmit}
-            // disabled={isSubmitDisabled}
-            ariaLabel="Submit action"
+            color="green"
+            size="large"
+            onClick={handleAccept}
+            ariaLabel="Accept task"
+            style={{ minWidth: '120px' }}
           >
-            {t('ui.submit')}
+            {t('ui.accept')}
+          </Button>
+          <Button
+            color="red"
+            size="large"
+            onClick={handleReject}
+            ariaLabel="Reject task"
+            style={{ minWidth: '120px' }}
+          >
+            {t('ui.reject')}
           </Button>
         </div>
 
