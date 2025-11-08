@@ -2,51 +2,85 @@
 
 This template provides a complete foundation for creating custom widgets for Webex Contact Center Desktop. It's based on the proven architecture of the hello-widget and includes all necessary files, configurations, and patterns for rapid widget development.
 
+## ⚡ Quick Setup (7 Steps)
+
+1. **Clone repository:** `git clone https://github.com/JardaMartan/webexcc-widget-template.git`
+2. **Run setup:** `./setup.sh` (Linux/macOS) or `setup.bat` (Windows)
+3. **Install deps:** `npm install`
+4. **Build widget:** `npm run build:standalone`
+5. **Start server:** `npm run serve`
+6. **Test locally:** Open `http://127.0.0.1:4137/standalone-test.html`
+7. **Deploy to WebexCC:** Upload to CDN, update layout JSON, test in Desktop
+
+Ready to build your widget in minutes! 🚀
+
 ## 🚀 Quick Start
 
-### 1. Copy and Customize Template
-
+### 1. Clone Repository
 ```bash
-# Copy the template to your new widget directory
-cp -r template/ my-new-widget/
-cd my-new-widget/
-
-# Replace placeholders with your widget details
-# See "Template Placeholders" section below
+git clone https://github.com/JardaMartan/webexcc-widget-template.git
+cd webexcc-widget-template
 ```
 
-### 2. Replace Template Placeholders
-
-The template uses placeholders that need to be replaced with your widget-specific values:
-
-| Placeholder | Description | Example |
-|-------------|-------------|---------|
-| `{{WIDGET_NAME}}` | Kebab-case widget name | `my-custom-widget` |
-| `{{WIDGET_KEBAB_CASE}}` | Same as WIDGET_NAME | `my-custom-widget` |
-| `{{WIDGET_PASCAL_CASE}}` | PascalCase component name | `MyCustomWidget` |
-| `{{WIDGET_TITLE}}` | Human-readable title | `My Custom Widget` |
-| `{{WIDGET_DESCRIPTION}}` | Widget description | `A custom widget for specific tasks` |
-| `{{WIDGET_LOGO_URL}}` | Logo URL for layout | `https://example.com/logo.png` |
-| `{{PRODUCTION_CDN_URL}}` | CDN URL for production | `https://cdn.example.com` |
-
-**Quick Replace Script:**
+### 2. Run Setup Script
+**Linux/macOS:**
 ```bash
-# Run this in your new widget directory
-sed -i '' 's/{{WIDGET_NAME}}/my-custom-widget/g' **/*.{js,jsx,json,html}
-sed -i '' 's/{{WIDGET_KEBAB_CASE}}/my-custom-widget/g' **/*.{js,jsx,json,html}
-sed -i '' 's/{{WIDGET_PASCAL_CASE}}/MyCustomWidget/g' **/*.{js,jsx,json,html}
-sed -i '' 's/{{WIDGET_TITLE}}/My Custom Widget/g' **/*.{js,jsx,json,html}
-sed -i '' 's/{{WIDGET_DESCRIPTION}}/A custom widget for specific tasks/g' **/*.{js,jsx,json,html}
+./setup.sh
 ```
+
+**Windows (Command Prompt):**
+```cmd
+setup.bat
+```
+
+**Windows (PowerShell):**
+```powershell
+.\setup.ps1
+```
+
+The setup script will:
+- Prompt for your widget name (e.g., `customer-info`)
+- Replace all template placeholders automatically
+- Rename files appropriately
 
 ### 3. Install Dependencies
-
 ```bash
 npm install
 ```
 
-### 4. Start Development
+### 4. Build Standalone Version
+```bash
+npm run build:standalone
+```
 
+### 5. Start Development Server
+```bash
+npm run serve
+```
+
+### 6. Test Your Widget
+Open `http://127.0.0.1:4137/standalone-test.html` in your browser to test the widget.
+
+### 7. Deploy to Webex Contact Center Desktop
+1. Upload `dist/your-widget-name-standalone.js` to your CDN
+2. Update `layout.standalone.json` with your CDN URL
+3. Upload the layout JSON to Webex Contact Center Desktop
+4. Test in the Desktop environment
+
+## 📋 Template Placeholders
+
+The setup scripts replace these placeholders automatically:
+
+| Placeholder | Description | Example |
+|-------------|-------------|---------|
+| `{{WIDGET_NAME}}` | Kebab-case widget name | `customer-info` |
+| `{{WIDGET_PASCAL_CASE}}` | PascalCase component name | `CustomerInfo` |
+| `{{WIDGET_SNAKE_CASE}}` | Snake_case variant | `customer_info` |
+| `{{WIDGET_TITLE_CASE}}` | Human-readable title | `Customer Info` |
+
+## 🛠️ Development Workflow
+
+For active development with hot reload:
 ```bash
 npm start
 # Opens dev.html at http://localhost:8080
@@ -329,20 +363,22 @@ Widget automatically receives these properties from Contact Center Desktop:
 
 ## 🚀 Deployment Checklist
 
-### Before Deployment
-- [ ] Replace all template placeholders
-- [ ] Customize widget functionality
-- [ ] Add proper translations
-- [ ] Configure API endpoints
-- [ ] Test in standalone mode
-- [ ] Build standalone version
+### Development Setup
+- [ ] Clone repository: `git clone https://github.com/JardaMartan/webexcc-widget-template.git`
+- [ ] Run setup script: `./setup.sh` (Linux/macOS) or `setup.bat` (Windows)
+- [ ] Install dependencies: `npm install`
+- [ ] Build standalone version: `npm run build:standalone`
+- [ ] Test locally: `npm run serve` and open `standalone-test.html`
 
-### Deployment Steps
-1. **Build**: `npm run build:standalone`
-2. **Upload**: Upload `dist/{{WIDGET_NAME}}-standalone.js` to CDN
-3. **Layout**: Update `layout.standalone.json` with CDN URL
-4. **Deploy**: Upload layout to Contact Center Desktop
-5. **Test**: Verify widget loads and functions correctly
+### Production Deployment
+- [ ] Customize widget functionality in `src/YourWidget.jsx`
+- [ ] Add proper translations in `src/i18n/translations.js`
+- [ ] Configure API endpoints in `src/api.js`
+- [ ] Build final version: `npm run build:standalone`
+- [ ] Upload `dist/your-widget-name-standalone.js` to CDN
+- [ ] Update `layout.standalone.json` with CDN URL
+- [ ] Upload layout JSON to Webex Contact Center Desktop
+- [ ] Test in Desktop environment
 
 ## 🐛 Troubleshooting
 
