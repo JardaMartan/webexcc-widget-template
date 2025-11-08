@@ -15,7 +15,6 @@ import {
   // TODO: Add your custom actions here
   // Example: setCustomData, executeCustomAction
 } from './store';
-import { sendWebhook } from './api';
 import { useI18n } from './i18n';
 
 const {{WIDGET_PASCAL_CASE}} = ({ 
@@ -91,41 +90,19 @@ const {{WIDGET_PASCAL_CASE}} = ({
   //   }
   // }, [someCondition, dispatch]);
 
-  // Parsing helpers
-  const parseJsonSafely = useCallback((maybeJson) => {
-    if (typeof maybeJson !== 'string') return maybeJson;
-    try { return JSON.parse(maybeJson); } catch (err) { console.error('JSON parse failed', err); return {}; }
-  }, []);
-
-  const sendBasicWebhook = useCallback(async (actionType) => {
-    const taskObj = parseJsonSafely(task) || {};
-    const agentObj = parseJsonSafely(agent) || {};
-    const payload = {
-      conversation_id: taskObj?.mediaResourceId || '',
-      doc_url: taskObj?.callAssociatedData?.associatedUrl?.value || taskObj?.callAssociatedData?.associatedURL?.value || '',
-      customer_id: taskObj?.ani || '',
-      agent_id: agentObj?.agentEmailId || '',
-      data: { action: actionType, notes }
-    };
-    try {
-      await sendWebhook(payload);
-      console.log('Webhook sent successfully for action:', actionType);
-    } catch (error) {
-      console.error('Failed to send webhook:', error);
-    }
-  }, [agent, notes, parseJsonSafely, task]);
-
   // Handle Accept action
   const handleAccept = useCallback(() => {
     console.log('Accept button clicked', { selectedtaskid, notes });
-    void sendBasicWebhook('Accept');
-  }, [selectedtaskid, notes, sendBasicWebhook]);
+    // TODO: Add your custom Accept logic here
+    // Example: dispatch(acceptTask(task, notes));
+  }, [selectedtaskid, notes]);
 
   // Handle Reject action
   const handleReject = useCallback(() => {
     console.log('Reject button clicked', { selectedtaskid, notes });
-    void sendBasicWebhook('Reject');
-  }, [selectedtaskid, notes, sendBasicWebhook]);
+    // TODO: Add your custom Reject logic here
+    // Example: dispatch(rejectTask(task, notes));
+  }, [selectedtaskid, notes]);
 
   // TODO: Add your custom handlers here
   // Example:

@@ -155,15 +155,27 @@ export const fetchCustomData = () => async (dispatch, getState) => {
 
 ### 3. API Integration (`src/api.js`)
 
-Replace the webhook URL and add your custom API functions:
+Add your custom API functions for external service integration:
 
 ```javascript
-// Update webhook URL
-const WEBHOOK_URL = 'https://your-actual-webhook-endpoint.com/webhook';
-
-// Add custom API functions
+// Example: Custom data fetching
 export const fetchCustomData = async (accessToken, orgId) => {
-  // Your API integration here
+  const API_BASE_URL = 'https://your-api-endpoint.com/api';
+  
+  const response = await fetch(`${API_BASE_URL}/data`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'X-Org-Id': orgId
+    }
+  });
+  
+  if (!response.ok) {
+    throw new Error(`API request failed with status: ${response.status}`);
+  }
+  
+  return await response.json();
 };
 ```
 
@@ -321,7 +333,7 @@ Widget automatically receives these properties from Contact Center Desktop:
 - [ ] Replace all template placeholders
 - [ ] Customize widget functionality
 - [ ] Add proper translations
-- [ ] Update webhook URLs
+- [ ] Configure API endpoints
 - [ ] Test in standalone mode
 - [ ] Build standalone version
 

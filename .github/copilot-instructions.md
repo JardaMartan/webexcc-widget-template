@@ -308,11 +308,11 @@ const handleOptionChange = (value) => {
 
 ## API Integration
 
-### Webhook Notifications
-- **Function**: `sendWebhook(payload)` in `src/api.js` sends POST to configured webhook URL
-- **Payload structure**: `{ conversation_id, doc_url, customer_id, agent_id, data: { action, notes } }`
-- **Called for**: Custom actions after successful SDK operation
-- **Error handling**: Webhook failures don't block main action flow (logged but not thrown)
+### External API Integration
+- **Purpose**: Template provides structure for custom API integrations in `src/api.js`
+- **Pattern**: Centralized API functions with error handling and logging
+- **Usage**: Customize `fetchCustomData()` example or add new API functions as needed
+- **Authentication**: Use `accesstoken` and `orgid` props for API calls
 
 ### Custom API Integration
 ```javascript
@@ -471,7 +471,7 @@ Web Component (index.jsx)
 Redux Store (store.js)
   ↓ (async thunks)
 Desktop SDK / API (api.js)
-  ↓ (webhooks)
+  ↓ (API calls)
 External Services
 ```
 
@@ -526,11 +526,11 @@ External Services
 - **When**: SDK code expects bare identifier, not `window.AGENTX_SERVICE`
 - **Critical**: Must be imported first in `index.jsx` before any SDK imports
 
-#### Webhook Integration
-- **Timing**: Called AFTER successful SDK operation, not before
-- **Error handling**: Webhook failures don't block main action (logged but not thrown)
-- **Payload format**: Consistent structure across all actions
-- **URL**: Configurable in `src/api.js` - update for different environments
+#### External API Integration
+- **Pattern**: Use async functions in `src/api.js` for external service calls
+- **Error handling**: Always catch and log errors, provide fallback behavior
+- **Authentication**: Use `accesstoken` and `orgid` properties for authenticated requests
+- **Best practices**: Centralize API logic, implement proper error boundaries
 
 ### Performance Considerations
 - **Bundle size**: Standalone build ~1.8MB (React + Redux + Momentum UI + widget code)
@@ -541,7 +541,7 @@ External Services
 ### Security Notes
 - **Access tokens**: Logged with masking (shows last 4 chars only)
 - **Sensitive data**: Task and agent objects may contain PII - handle appropriately
-- **Webhook URLs**: Configurable - consider environment variables for production
+- **API endpoints**: Use environment variables for production API URLs
 - **CORS**: Required for local development, not needed in production (same-origin)
 
 ## Customization Guidelines
