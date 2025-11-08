@@ -1,38 +1,30 @@
 {
-  "desktopLayout": {
-    "appTitle": "{{WIDGET_TITLE}}",
-    "logo": "{{WIDGET_LOGO_URL}}",
-    "areas": {
-      "header": {
-        "widgets": []
+  "comp": "md-tab-panel",
+  "attributes": {
+    "slot": "panel",
+    "class": "widget-pane"
+  },
+  "children": [
+    {
+      "comp": "{{WIDGET_NAME}}",
+      "script": "http://127.0.0.1:4137/dist/{{WIDGET_NAME}}-standalone.js",
+      "attributes": {
+        "darkmode": "$STORE.app.darkMode",
+        "accesstoken": "$STORE.auth.accessToken"
       },
-      "content": {
-        "widgets": [
-          {
-            "src": "http://127.0.0.1:4137/dist/{{WIDGET_NAME}}.js",
-            "title": "{{WIDGET_TITLE}}",
-            "tag": "{{WIDGET_KEBAB_CASE}}",
-            "area": "content",
-            "nav": {
-              "navigateTo": "overview"
-            },
-            "layout": {
-              "desktop": {
-                "x": 0,
-                "y": 0,
-                "w": 6,
-                "h": 4
-              }
-            },
-            "context": {
-              "task": "$STORE.task",
-              "agent": "$STORE.agent",
-              "accesstoken": "$STORE.auth.accessToken",
-              "orgid": "$STORE.auth.orgId"
-            }
-          }
-        ]
+      "properties": {
+        "task": "$STORE.agentContact.taskSelected",
+        "selectedtaskid": "$STORE.agentContact.selectedTaskId",
+        "cad": "$STORE.agentContact.taskMap",
+        "details": "$STORE.agentContact.taskMap",
+        "wrap": "$STORE.agent.wrapUpData",
+        "avatar": "https://randomuser.me/api/portraits/med/lego/1.jpg",
+        "name": "{{WIDGET_TITLE}} - Development Mode",
+        "orgid": "$STORE.agent.orgId",
+        "datacenter": "$STORE.app.datacenter",
+        "agent": "$STORE.agent",
+        "agentid": "$STORE.agent.agentDbId"
       }
     }
-  }
+  ]
 }

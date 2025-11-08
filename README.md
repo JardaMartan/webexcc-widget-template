@@ -69,27 +69,34 @@ First, test with localhost before deploying to CDN:
 1. **Update layout.standalone.json** with your localhost URL:
    ```json
    {
-     "appTitle": "Your Widget Name",
-     "version": "0.0.1",
-     "buildNumber": "1.0.0.0",
-     "areas": {
-       "app-maximize-area": {
-         "widgets": {
-           "your-widget": {
-             "src": "http://127.0.0.1:4137/dist/your-widget-standalone.js",
-             "label": "Your Widget",
-             "iconSrc": "your-icon-url",
-             "order": 1,
-             "context": {
-               "task": "$STORE.task",
-               "agent": "$STORE.agent",
-               "accesstoken": "$STORE.auth.accessToken",
-               "orgid": "$STORE.auth.orgId"
-             }
-           }
+     "comp": "md-tab-panel",
+     "attributes": {
+       "slot": "panel",
+       "class": "widget-pane"
+     },
+     "children": [
+       {
+         "comp": "your-widget-name",
+         "script": "http://127.0.0.1:4137/dist/your-widget-standalone.js",
+         "attributes": {
+           "darkmode": "$STORE.app.darkMode",
+           "accesstoken": "$STORE.auth.accessToken"
+         },
+         "properties": {
+           "task": "$STORE.agentContact.taskSelected",
+           "selectedtaskid": "$STORE.agentContact.selectedTaskId",
+           "cad": "$STORE.agentContact.taskMap",
+           "details": "$STORE.agentContact.taskMap",
+           "wrap": "$STORE.agent.wrapUpData",
+           "avatar": "https://randomuser.me/api/portraits/med/lego/1.jpg",
+           "name": "Your Widget - Loaded from Layout JSON",
+           "orgid": "$STORE.agent.orgId",
+           "datacenter": "$STORE.app.datacenter",
+           "agent": "$STORE.agent",
+           "agentid": "$STORE.agent.agentDbId"
          }
        }
-     }
+     ]
    }
    ```
 
@@ -403,20 +410,28 @@ WebexCC Desktop layouts define where and how widgets appear in the agent interfa
 - **`layout.debug.json`**: Minimal debug widget for troubleshooting
 - **`layout.minimal.json`**: Simplified widget configuration
 
-### Desktop Layout Areas
-Widgets can be placed in different areas of the desktop interface:
+### Widget Placement in Desktop Layout
+This template is configured as a **panel widget** that gets embedded within existing Desktop UI components. The widget configuration is typically placed within:
 
+```
+Agent Layout → Area → Panel → Children
+```
+
+Example placement in Desktop layout structure:
 ```json
 {
-  "areas": {
-    "app-maximize-area": {          // Main widget area (full screen)
-      "widgets": { /* your widgets */ }
-    },
-    "horizontal-panel": {           // Bottom panel area
-      "widgets": { /* your widgets */ }
-    },
-    "side-panel": {                 // Right side panel
-      "widgets": { /* your widgets */ }
+  "agent": {
+    "areas": {
+      "task-area": {
+        "panels": {
+          "task-panel": {
+            "comp": "md-tab-panel",
+            "children": [
+              // Your widget configuration goes here
+            ]
+          }
+        }
+      }
     }
   }
 }
@@ -425,46 +440,59 @@ Widgets can be placed in different areas of the desktop interface:
 ### Widget Configuration Structure
 ```json
 {
-  "your-widget-name": {
-    "src": "http://127.0.0.1:4137/dist/your-widget-standalone.js",
-    "label": "Your Widget Display Name",
-    "iconSrc": "https://your-cdn.com/icon.png",
-    "order": 1,
-    "context": {
-      "task": "$STORE.task",
-      "agent": "$STORE.agent",
-      "accesstoken": "$STORE.auth.accessToken",
-      "orgid": "$STORE.auth.orgId",
-      "selectedtaskid": "$STORE.app.selectedTaskId",
-      "cad": "$STORE.task.callAssociatedData",
-      "details": "$STORE.task.details"
-    }
+  "comp": "your-widget-name",
+  "script": "http://127.0.0.1:4137/dist/your-widget-standalone.js",
+  "attributes": {
+    "darkmode": "$STORE.app.darkMode",
+    "accesstoken": "$STORE.auth.accessToken"
+  },
+  "properties": {
+    "task": "$STORE.agentContact.taskSelected",
+    "selectedtaskid": "$STORE.agentContact.selectedTaskId", 
+    "cad": "$STORE.agentContact.taskMap",
+    "details": "$STORE.agentContact.taskMap",
+    "wrap": "$STORE.agent.wrapUpData",
+    "avatar": "https://your-cdn.com/avatar.jpg",
+    "name": "Your Widget Display Name",
+    "orgid": "$STORE.agent.orgId",
+    "datacenter": "$STORE.app.datacenter",
+    "agent": "$STORE.agent",
+    "agentid": "$STORE.agent.agentDbId"
   }
 }
 ```
 
 ### Context Data Binding
-The `context` object defines which WebexCC Desktop store data gets passed to your widget:
+WebexCC Desktop passes data to your widget through `attributes` and `properties`:
 
+#### Attributes (HTML attributes)
+| Attribute | Description | Desktop Store Path |
+|-----------|-------------|-------------------|
+| `darkmode` | Current theme mode | `$STORE.app.darkMode` |
+| `accesstoken` | OAuth access token | `$STORE.auth.accessToken` |
+
+#### Properties (Web component properties)
 | Property | Description | Desktop Store Path |
 |----------|-------------|-------------------|
-| `task` | Current interaction/task data | `$STORE.task` |
-| `agent` | Agent information and profile | `$STORE.agent` |
-| `accesstoken` | OAuth access token | `$STORE.auth.accessToken` |
-| `orgid` | Organization ID | `$STORE.auth.orgId` |
-| `selectedtaskid` | Currently selected task ID | `$STORE.app.selectedTaskId` |
-| `cad` | Call Associated Data | `$STORE.task.callAssociatedData` |
-| `details` | Task details and metadata | `$STORE.task.details` |
+| `task` | Current selected task data | `$STORE.agentContact.taskSelected` |
+| `selectedtaskid` | Currently selected task ID | `$STORE.agentContact.selectedTaskId` |
+| `cad` | Task map / Call Associated Data | `$STORE.agentContact.taskMap` |
+| `details` | Task details and metadata | `$STORE.agentContact.taskMap` |
+| `wrap` | Wrap-up data for current task | `$STORE.agent.wrapUpData` |
+| `orgid` | Organization ID | `$STORE.agent.orgId` |
+| `datacenter` | Data center information | `$STORE.app.datacenter` |
+| `agent` | Complete agent object | `$STORE.agent` |
+| `agentid` | Agent database ID | `$STORE.agent.agentDbId` |
 
 ### Development vs Production URLs
 **Development (localhost):**
 ```json
-"src": "http://127.0.0.1:4137/dist/your-widget-standalone.js"
+"script": "http://127.0.0.1:4137/dist/your-widget-standalone.js"
 ```
 
 **Production (CDN):**
 ```json
-"src": "https://your-cdn.com/widgets/your-widget-standalone.js"
+"script": "https://your-cdn.com/widgets/your-widget-standalone.js"
 ```
 
 ### Layout Deployment Process

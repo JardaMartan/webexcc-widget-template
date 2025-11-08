@@ -29,7 +29,8 @@ const {{WIDGET_PASCAL_CASE}} = ({
   name, 
   orgid, 
   datacenter, 
-  agent
+  agent,
+  agentid
 }) => {
   const dispatch = useDispatch();
   const { 
@@ -66,9 +67,10 @@ const {{WIDGET_PASCAL_CASE}} = ({
       name, 
       orgid, 
       datacenter, 
-      agent
+      agent,
+      agentid
     });
-  }, [darkmode, accesstoken, task, selectedtaskid, cad, details, wrap, avatar, name, orgid, datacenter, agent]);
+  }, [darkmode, accesstoken, task, selectedtaskid, cad, details, wrap, avatar, name, orgid, datacenter, agent, agentid]);
 
   // Sync Redux store agent with incoming agent prop
   useEffect(() => {
@@ -197,6 +199,7 @@ const {{WIDGET_PASCAL_CASE}} = ({
           <div>{t('ui.props.orgId')}: {orgid || t('ui.value.notSet')}</div>
           <div>{t('ui.props.dataCenter')}: {datacenter || t('ui.value.notSet')}</div>
           <div>{t('ui.props.selectedTaskId')}: {selectedtaskid || t('ui.value.notSet')}</div>
+          <div>{t('ui.props.agentId')}: {agentid || t('ui.value.notSet')}</div>
           <div>{t('ui.props.task')}: {truncateText(task)}</div>
           <div>{t('ui.props.agent')}: {truncateText(agent)}</div>
           <div>{t('ui.props.cad')}: {truncateText(cad)}</div>
@@ -221,6 +224,7 @@ const {{WIDGET_PASCAL_CASE}} = ({
   orgid: PropTypes.string,
   datacenter: PropTypes.string,
   agent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  agentid: PropTypes.string,
 };
 
 {{WIDGET_PASCAL_CASE}}.defaultProps = {
@@ -236,6 +240,7 @@ const {{WIDGET_PASCAL_CASE}} = ({
   orgid: null,
   datacenter: null,
   agent: null,
+  agentid: null,
 };
 
 export default {{WIDGET_PASCAL_CASE}};
