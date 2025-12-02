@@ -4,8 +4,7 @@ This template provides a complete foundation for creating custom widgets for Web
 
 ## ⚡ Quick Setup (9 Steps)
 
-1. **Clone repository:** `git clone https://github.com/JardaMartan/webexcc-widget-template.git my-widget  
-cd my-widget`
+1. **Clone repository:** `git clone https://github.com/JardaMartan/webexcc-widget-template.git my-widget && cd my-widget`
 2. **Run setup:** `./setup.sh` (Linux/macOS) or `setup.bat` (Windows)
 3. **Install deps:** `npm install`
 4. **Build widget:** `npm run build:standalone`
@@ -21,8 +20,8 @@ Ready to build your widget in minutes! 🚀
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/JardaMartan/webexcc-widget-template.git
-cd webexcc-widget-template
+git clone https://github.com/JardaMartan/webexcc-widget-template.git my-widget
+cd my-widget
 ```
 
 ### 2. Run Setup Script
@@ -77,8 +76,8 @@ First, test with localhost before deploying to CDN:
      },
      "children": [
        {
-         "comp": "your-widget-name",
-         "script": "http://127.0.0.1:4137/dist/your-widget-standalone.js",
+         "comp": "my-widget",
+         "script": "http://127.0.0.1:4137/dist/my-widget-standalone.js",
          "attributes": {
            "darkmode": "$STORE.app.darkMode",
            "accesstoken": "$STORE.auth.accessToken"
@@ -122,10 +121,10 @@ First, test with localhost before deploying to CDN:
 ### 9. Deploy to Production CDN
 Once testing is complete, deploy to your CDN:
 
-1. **Upload to CDN:** Upload `dist/your-widget-name-standalone.js` to your CDN
+1. **Upload to CDN:** Upload `dist/my-widget-name-standalone.js` to your CDN
 2. **Update layout JSON:** Replace localhost URL with CDN URL:
    ```json
-   "src": "https://your-cdn.com/widgets/your-widget-standalone.js"
+   "src": "https://your-cdn.com/widgets/my-widget-standalone.js"
    ```
 3. **Deploy layout:** Upload updated layout JSON to WebexCC Desktop
 4. **Production test:** Verify widget works from CDN in production environment
@@ -441,8 +440,8 @@ Example placement in Desktop layout structure:
 ### Widget Configuration Structure
 ```json
 {
-  "comp": "your-widget-name",
-  "script": "http://127.0.0.1:4137/dist/your-widget-standalone.js",
+  "comp": "my-widget-name",
+  "script": "http://127.0.0.1:4137/dist/my-widget-standalone.js",
   "attributes": {
     "darkmode": "$STORE.app.darkMode",
     "accesstoken": "$STORE.auth.accessToken"
@@ -488,12 +487,12 @@ WebexCC Desktop passes data to your widget through `attributes` and `properties`
 ### Development vs Production URLs
 **Development (localhost):**
 ```json
-"script": "http://127.0.0.1:4137/dist/your-widget-standalone.js"
+"script": "http://127.0.0.1:4137/dist/my-widget-standalone.js"
 ```
 
 **Production (CDN):**
 ```json
-"script": "https://your-cdn.com/widgets/your-widget-standalone.js"
+"script": "https://your-cdn.com/widgets/my-widget-standalone.js"
 ```
 
 ### Layout Deployment Process
@@ -519,7 +518,7 @@ WebexCC Desktop passes data to your widget through `attributes` and `properties`
 ## 🚀 Deployment Checklist
 
 ### Development Setup
-- [ ] Clone repository: `git clone https://github.com/JardaMartan/webexcc-widget-template.git`
+- [ ] Clone repository: `git clone https://github.com/JardaMartan/webexcc-widget-template.git my-widget && cd my-widget`
 - [ ] Run setup script: `./setup.sh` (Linux/macOS) or `setup.bat` (Windows)
 - [ ] Install dependencies: `npm install`
 - [ ] Build standalone version: `npm run build:standalone`
@@ -527,7 +526,7 @@ WebexCC Desktop passes data to your widget through `attributes` and `properties`
 - [ ] Test locally: Open `http://127.0.0.1:4137/standalone-test.html`
 
 ### WebexCC Desktop Integration
-- [ ] Update `layout.standalone.json` with localhost URL (`http://127.0.0.1:4137/dist/your-widget-standalone.js`)
+- [ ] Update `layout.standalone.json` with localhost URL (`http://127.0.0.1:4137/dist/my-widget-standalone.js`)
 - [ ] Configure widget context properties (task, agent, accesstoken, orgid)
 - [ ] Upload layout JSON to WebexCC Management Portal
 - [ ] Assign layout to test team/agents
@@ -536,11 +535,11 @@ WebexCC Desktop passes data to your widget through `attributes` and `properties`
 - [ ] Test widget functionality with real agent sessions
 
 ### Production Deployment
-- [ ] Customize widget functionality in `src/YourWidget.jsx`
+- [ ] Customize widget functionality in `src/MyWidget.jsx`
 - [ ] Add proper translations in `src/i18n/translations.js`
 - [ ] Configure API endpoints in `src/api.js`
 - [ ] Build final version: `npm run build:standalone`
-- [ ] Upload `dist/your-widget-name-standalone.js` to CDN
+- [ ] Upload `dist/my-widget-name-standalone.js` to CDN
 - [ ] Update `layout.standalone.json` with CDN URL
 - [ ] Deploy updated layout JSON to WebexCC Desktop
 - [ ] Test production deployment
