@@ -4,7 +4,8 @@ This template provides a complete foundation for creating custom widgets for Web
 
 ## ⚡ Quick Setup (9 Steps)
 
-1. **Clone repository:** `git clone https://github.com/JardaMartan/webexcc-widget-template.git`
+1. **Clone repository:** `git clone https://github.com/JardaMartan/webexcc-widget-template.git my-widget  
+cd my-widget`
 2. **Run setup:** `./setup.sh` (Linux/macOS) or `setup.bat` (Windows)
 3. **Install deps:** `npm install`
 4. **Build widget:** `npm run build:standalone`
